@@ -74,6 +74,16 @@ func NewSocketMonitor(network, addr string, timeout time.Duration) (*SocketMonit
 	return mon, nil
 }
 
+// NewMonitor configures a monitor using the provided connection.
+func NewMonitor(conn net.Conn) (*SocketMonitor, error) {
+	mon := &SocketMonitor{
+		c:         conn,
+		listeners: new(int32),
+	}
+
+	return mon, nil
+}
+
 // Listen creates a new SocketMonitor listening for a single connection to the provided socket file or address.
 // An error is returned if unable to listen at the specified file path or port.
 //
@@ -263,7 +273,7 @@ func (mon *SocketMonitor) RunWithFile(command []byte, file *os.File) ([]byte, er
 type banner struct {
 	QMP struct {
 		Capabilities []string `json:"capabilities"`
-		Version Version `json:"version"`
+		Version      Version  `json:"version"`
 	} `json:"QMP"`
 }
 
